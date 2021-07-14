@@ -1,51 +1,32 @@
  import React from 'react';
  import './Styles/App.css';
  import 'bootstrap/dist/css/bootstrap.min.css';
- import MovieList from './Components/movieList'
+ import MovieList from './Components/movieList';
+ import Heading from './Components/movieHeading';
+ import MovieSearch from './Components/movieSearch';
 
 function App() {
-  const [movie , setMovie] =React.useState([
-    {
-      "Title": "Star Wars: Empire at War",
-      "Year": "2006",
-      "imdbID": "tt0804909",
-      "Type": "game",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BOGRiMDllMDUtOWFkZS00MGIyLWFkOTQtZjY2ZGUyNzY5YWRiXkEyXkFqcGdeQXVyMzM4MjM0Nzg@._V1_SX300.jpg"
-  },
-  {
-      "Title": "Star Wars Empire at War: Forces of Corruption",
-      "Year": "2006",
-      "imdbID": "tt0879261",
-      "Type": "game",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BNGIxYTZiMmQtYjYzMS00ZmExLTljZDktMjE1ODY5OTJlYjlmXkEyXkFqcGdeQXVyMzM4MjM0Nzg@._V1_SX300.jpg"
-  },
-  {
-      "Title": "Star Trek: Enterprise - In a Time of War",
-      "Year": "2014",
-      "imdbID": "tt3445408",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMTk4NDA4MzUwM15BMl5BanBnXkFtZTgwMTg3NjY5MDE@._V1_SX300.jpg"
-  },
-  {
-      "Title": "Star Trek: Starfleet Command: Volume II: Empires at War",
-      "Year": "2000",
-      "imdbID": "tt0272306",
-      "Type": "game",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BOTJiYjQxZDQtOWM5NS00ZDZhLWJkYTUtNjQ3ZjdiMzM1MDYyXkEyXkFqcGdeQXVyMzMxNDQ0NQ@@._V1_SX300.jpg"
-  }
-  ])
-  //   const MovieList = async() =>{
-  //         const url = `http://www.omdbapi.com/?s=star war&apikey=a8c756b4`;
-  //         await fetch(url);
-  //         await response 
-  //         setMovie(res)
-  //   }
-  //  React.useEffect(()=>{
-
-  //  } , [])
+  const [movies , setMovies] =React.useState([]);
+  const [searchValue,setSearchValue] = React.useState("");
+    const MovieRequest = async(searchValue) =>{
+          const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=a8c756b4`;
+          const response=await fetch(url);
+          const jres = await response.json();
+          if(jres.Search)
+             setMovies(jres.Search);
+    }
+   React.useEffect(()=>{
+         MovieRequest(searchValue);
+   } , [searchValue])
   return (
-    <div className="App">
-        <MovieList movies ={movie} />   
+    <div className="container-fluid movie-app">
+    <div className="row d-flex align-items-center mt-4 mb-4">
+     <Heading heading="Movies that you searched........"/> 
+     <MovieSearch searchValue={searchValue} setSearchValue={setSearchValue}/> 
+    </div>
+    <div className="row"  >
+          <MovieList movies ={movies} />   
+    </div>      
     </div>
   );
 }
